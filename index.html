@@ -1,0 +1,1856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MeshAttend | Real-Time Classroom Attendance & Continuous Tracking</title>
+  <meta name="description" content="MeshAttend uses BLE, mesh networking, continuous presence verification, and low-cost ESP32 hardware to solve classroom attendance without internet dependencies.">
+  <meta name="keywords" content="MeshAttend, BLE, Bluetooth Mesh, ESP32, Attendance Tracking, RSSI, Continuous Presence, EdTech, Hackathon 2026">
+
+  <!-- Modern Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- STICKY TOP NAVBAR -->
+  <header class="navbar" id="topNavbar">
+    <div class="container nav-inner">
+      <div class="brand">
+        <div class="brand-logo">M</div>
+        <div class="brand-text">
+          <div class="brand-title">
+            MeshAttend
+            <span class="brand-badge">BLE·MESH</span>
+          </div>
+          <span class="brand-sub">Real-Time Classroom Attendance</span>
+        </div>
+      </div>
+
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links">
+          <li><a href="#overview" class="nav-link active">Overview</a></li>
+          <li><a href="#problem" class="nav-link">Problem</a></li>
+          <li><a href="#solution" class="nav-link">Solution</a></li>
+          <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
+          <li><a href="#architecture" class="nav-link">Architecture</a></li>
+          <li><a href="#simulator" class="nav-link">Simulator</a></li>
+          <li><a href="#dashboard" class="nav-link">Dashboard</a></li>
+          <li><a href="#research" class="nav-link">Research</a></li>
+          <li><a href="#comparison" class="nav-link">Comparison</a></li>
+          <li><a href="#feasibility" class="nav-link">Feasibility</a></li>
+          <li><a href="#prototype" class="nav-link">Prototype</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="btn-search-trigger" aria-label="Search Documentation">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          Search <span class="kbd-shortcut">Ctrl K</span>
+        </button>
+
+        <button class="btn-judge btn-judge-trigger" title="Quick 60-second summary for evaluators">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Judge Brief
+        </button>
+
+        <a href="#prototype" class="btn-primary">
+          Live Demo
+        </a>
+
+        <button class="mobile-menu-btn" aria-label="Toggle menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- DOCUMENTATION LAYOUT WRAPPER -->
+  <div class="doc-layout">
+    
+    <!-- LEFT DOCUMENTATION SIDEBAR (DESKTOP) -->
+    <aside class="doc-sidebar" aria-label="Documentation Index">
+      <div class="sidebar-heading">Navigation Index</div>
+      <ul class="sidebar-nav">
+        <li><a href="#overview" class="sidebar-link active"><span class="step-num">01</span> Overview & Vision</a></li>
+        <li><a href="#metrics" class="sidebar-link"><span class="step-num">02</span> National Metrics</a></li>
+        <li><a href="#problem" class="sidebar-link"><span class="step-num">03</span> Attendance Dilemma</a></li>
+        <li><a href="#solution" class="sidebar-link"><span class="step-num">04</span> Meet MeshAttend</a></li>
+        <li><a href="#how-it-works" class="sidebar-link"><span class="step-num">05</span> 12-Step Pipeline</a></li>
+        <li><a href="#architecture" class="sidebar-link"><span class="step-num">06</span> System Architecture</a></li>
+        <li><a href="#technology" class="sidebar-link"><span class="step-num">07</span> Technology Deep Dive</a></li>
+        <li><a href="#continuous" class="sidebar-link"><span class="step-num">08</span> Continuous Presence</a></li>
+        <li><a href="#teacher-presence" class="sidebar-link"><span class="step-num">09</span> Teacher Verification</a></li>
+        <li><a href="#offline" class="sidebar-link"><span class="step-num">10</span> Offline BLE Mesh</a></li>
+        <li><a href="#workflow" class="sidebar-link"><span class="step-num">11</span> End-to-End Workflow</a></li>
+        <li><a href="#simulator" class="sidebar-link"><span class="step-num">12</span> Live Simulator</a></li>
+        <li><a href="#dashboard" class="sidebar-link"><span class="step-num">13</span> Admin Dashboard</a></li>
+        <li><a href="#research" class="sidebar-link"><span class="step-num">14</span> Research & Papers</a></li>
+        <li><a href="#comparison" class="sidebar-link"><span class="step-num">15</span> System Comparison</a></li>
+        <li><a href="#feasibility" class="sidebar-link"><span class="step-num">16</span> Feasibility & Economics</a></li>
+        <li><a href="#risks" class="sidebar-link"><span class="step-num">17</span> Risks & Mitigations</a></li>
+        <li><a href="#prototype" class="sidebar-link"><span class="step-num">18</span> Hardware Prototype</a></li>
+        <li><a href="#future" class="sidebar-link"><span class="step-num">19</span> Future Directions</a></li>
+      </ul>
+
+      <div style="margin-top: 2rem; padding: 1rem; background: rgba(11, 42, 74, 0.4); border-radius: var(--radius-sm); border: 1px solid rgba(59, 130, 246, 0.2);">
+        <div class="mono-label status-online" style="margin-bottom: 0.5rem; font-size: 0.65rem;">
+          <span class="pulse-dot"></span> ESP32 MESH READY
+        </div>
+        <div style="font-size: 0.75rem; color: #94A3B8;">
+          Campus Node ID: <code style="color: #22D3EE;">#ESP-C104-GATEWAY</code>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN DOCUMENTATION CONTENT -->
+    <main class="doc-main">
+
+      <!-- 1. HERO SECTION -->
+      <section class="hero-section" id="overview">
+        <div class="hero-grid-pattern"></div>
+        <div class="container hero-content-grid">
+          <div>
+            <div class="hero-badge-wrap">
+              <span class="mono-label status-online">
+                <span class="pulse-dot"></span> SYSTEM ONLINE
+              </span>
+              <span class="mono-label cyan">
+                BLE MESH NETWORK ACTIVE
+              </span>
+              <span class="mono-label">
+                HACKATHON TECHNICAL DOCUMENTATION
+              </span>
+            </div>
+
+            <h1 class="hero-title">
+              Attendance That Doesn't Stop at the <span class="text-gradient">Roll Call.</span>
+            </h1>
+
+            <p class="hero-sub">
+              MeshAttend combines Bluetooth Low Energy (BLE), multi-hop mesh networking, and continuous presence verification to create a tamper-resistant, low-cost attendance system engineered for colleges with poor or zero internet connectivity.
+            </p>
+
+            <div class="hero-actions">
+              <a href="#how-it-works" class="btn-primary">
+                Explore the System &rarr;
+              </a>
+              <a href="#simulator" class="btn-outline">
+                Launch Live Simulator
+              </a>
+              <button class="btn-judge btn-judge-trigger">
+                Judge 60s Brief
+              </button>
+            </div>
+          </div>
+
+          <!-- Hero Right: Interactive Animated Classroom & Mesh Network Visualization -->
+          <div class="hero-viz-card">
+            <div class="viz-card-header">
+              <div class="viz-card-title">
+                <span class="pulse-dot" style="color: #22D3EE;"></span>
+                <span>REAL-TIME BLE MESH TOPOLOGY</span>
+              </div>
+              <span class="mono-label" style="font-size: 0.65rem;">2.4 GHz RF CARRIER</span>
+            </div>
+
+            <div class="viz-canvas-container">
+              <canvas id="heroNetworkCanvas"></canvas>
+            </div>
+
+            <div class="viz-legend">
+              <div class="legend-item">
+                <span class="legend-color" style="background: #10B981;"></span>
+                <span>Present</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-color" style="background: #F59E0B;"></span>
+                <span>Uncertain</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-color" style="background: #EF4444;"></span>
+                <span>Absent / Left</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-color" style="background: #22D3EE;"></span>
+                <span>Mesh Route</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. PROJECT METRICS SECTION -->
+      <section class="metrics-section" id="metrics">
+        <div class="container">
+          <div class="metrics-grid">
+            
+            <div class="metric-card">
+              <div class="metric-number">
+                12.16 <span class="unit">Cr</span>
+              </div>
+              <div class="metric-label">Students Enrolled in Government Colleges</div>
+              <p class="metric-desc">
+                Massive enrolled population across central, state, and rural educational institutions needing scalable digital tracking.
+              </p>
+              <a href="#research" class="metric-source">
+                Source: AISHE Government Higher Education Survey &rarr;
+              </a>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-number">
+                75.9 <span class="unit">%</span>
+              </div>
+              <div class="metric-label">Average Student Attendance in Government Colleges</div>
+              <p class="metric-desc">
+                Persistent unrecorded dropouts and proxy check-ins mask true classroom engagement in conventional roll-call registers.
+              </p>
+              <a href="#research" class="metric-source">
+                Source: University Attendance & Retention Statistics &rarr;
+              </a>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-number">
+                11.5 <span class="unit">%</span>
+              </div>
+              <div class="metric-label">Government College Dropout Rate in India</div>
+              <p class="metric-desc">
+                High attrition stems from lack of early warning telemetry before students permanently discontinue university coursework.
+              </p>
+              <a href="#research" class="metric-source">
+                Source: Public Higher Education Retention Reports &rarr;
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. THE PROBLEM SECTION -->
+      <section class="doc-section" id="problem">
+        <div class="container">
+          <div class="section-header">
+            <span class="mono-label status-danger">CHALLENGES IN HIGHER EDUCATION</span>
+            <h2 class="section-title">The Attendance Problem</h2>
+            <p class="section-subtitle">
+              Conventional attendance mechanisms fail across universities because they capture a single momentary timestamp rather than verifying continuous physical learning engagement.
+            </p>
+          </div>
+
+          <div class="problem-grid">
+            
+            <div class="problem-card">
+              <div class="problem-header">
+                <span class="problem-num">PROBLEM 01</span>
+                <div class="problem-icon-wrap">⏱️</div>
+              </div>
+              <h3>Manual Attendance</h3>
+              <p>
+                Professors spend 15–20 minutes calling roll numbers out of a 50-minute lecture, draining hundreds of productive instructional hours annually across every academic department.
+              </p>
+              <div class="problem-consequence">
+                <strong>Impact:</strong> Up to 25% of total classroom teaching time lost.
+              </div>
+            </div>
+
+            <div class="problem-card">
+              <div class="problem-header">
+                <span class="problem-num">PROBLEM 02</span>
+                <div class="problem-icon-wrap">👥</div>
+              </div>
+              <h3>Proxy & Fake Attendance</h3>
+              <p>
+                Friends call out roll numbers or pass mobile phones and RFID identity cards to bypass paper registers, mobile QR scans, and one-off GPS geofence checks.
+              </p>
+              <div class="problem-consequence">
+                <strong>Impact:</strong> Fabricated records with zero physical presence proof.
+              </div>
+            </div>
+
+            <div class="problem-card">
+              <div class="problem-header">
+                <span class="problem-num">PROBLEM 03</span>
+                <div class="problem-icon-wrap">🚶</div>
+              </div>
+              <h3>No Continuous Presence Tracking</h3>
+              <p>
+                Students answer the roll call at 09:00 AM and slip out of the lecture hall at 09:12 AM. Existing biometric and manual solutions possess zero awareness of mid-lecture truancy.
+              </p>
+              <div class="problem-consequence">
+                <strong>Impact:</strong> Massive ghost attendance despite empty desks.
+              </div>
+            </div>
+
+            <div class="problem-card">
+              <div class="problem-header">
+                <span class="problem-num">PROBLEM 04</span>
+                <div class="problem-icon-wrap">📡</div>
+              </div>
+              <h3>Internet Dependency</h3>
+              <p>
+                Thick concrete classroom walls, remote college locations, and frequent campus internet blackouts crash Wi-Fi and cloud biometric apps that require continuous live internet.
+              </p>
+              <div class="problem-consequence">
+                <strong>Impact:</strong> Systems fail completely during frequent network outages.
+              </div>
+            </div>
+
+            <div class="problem-card">
+              <div class="problem-header">
+                <span class="problem-num">PROBLEM 05</span>
+                <div class="problem-icon-wrap">👨‍🏫</div>
+              </div>
+              <h3>Teacher Presence Uncertainty</h3>
+              <p>
+                Current software monitors students while ignoring faculty attendance. There is no automated record verifying whether the instructor arrived on time, was substituted, or left early.
+              </p>
+              <div class="problem-consequence">
+                <strong>Impact:</strong> Zero institutional accountability for scheduled classes.
+              </div>
+            </div>
+
+            <div class="problem-card">
+              <div class="problem-header">
+                <span class="problem-num">PROBLEM 06</span>
+                <div class="problem-icon-wrap">📁</div>
+              </div>
+              <h3>Limited Real-Time Visibility</h3>
+              <p>
+                Attendance remains locked away in handwritten paper registers until semester exam eligibility checks, making timely interventions for struggling students impossible.
+              </p>
+              <div class="problem-consequence">
+                <strong>Impact:</strong> Parents and district officers receive alerts months too late.
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Problem Storytelling Flow -->
+          <div class="problem-flow-box">
+            <div class="mono-label status-danger" style="margin-bottom: 0.5rem;">THE CONVENTIONAL ROLL-CALL CASCADE</div>
+            <div style="font-size: 0.95rem; font-weight: 600; color: var(--navy);">Why current college mechanisms break down at scale:</div>
+            
+            <div class="flow-steps-chain">
+              <div class="chain-item">Manual Roll Call (15m lost)</div>
+              <div class="chain-arrow">&rarr;</div>
+              <div class="chain-item">Proxy / Fake Calls</div>
+              <div class="chain-arrow">&rarr;</div>
+              <div class="chain-item">Mid-Class Departure</div>
+              <div class="chain-arrow">&rarr;</div>
+              <div class="chain-item">Internet Fails App</div>
+              <div class="chain-arrow">&rarr;</div>
+              <div class="chain-item">Paper Registry Locked</div>
+              <div class="chain-arrow">&rarr;</div>
+              <div class="chain-item" style="border-color: #EF4444; color: #EF4444; background: rgba(239,68,68,0.05);">11.5% Student Dropout</div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 4. MEET MESHATTEND (SOLUTION) -->
+      <section class="doc-section alt-bg" id="solution">
+        <div class="container">
+          <div class="section-header">
+            <span class="mono-label cyan">THE PROPOSED INNOVATION</span>
+            <h2 class="section-title">Meet MeshAttend</h2>
+            <p class="section-subtitle">
+              MeshAttend transforms passive attendance into an autonomous, continuous classroom presence intelligence network using low-power BLE signals, peer-to-peer mesh hops, and edge verification.
+            </p>
+          </div>
+
+          <!-- 3 Large Visual USP Cards -->
+          <div class="usp-grid">
+            
+            <div class="usp-card">
+              <span class="usp-badge">USP 01 // IDENTITY + PRESENCE</span>
+              <h3>Identity-Linked Presence</h3>
+              <div class="usp-quote">
+                "Student identity and physical room presence are verified together cryptographically."
+              </div>
+              <p>
+                Eliminates buddy-punching and proxy calls. An enrolled student ID is bound to a rolling cryptographic BLE signature that must physically radiate within the classroom boundary.
+              </p>
+              <ul class="usp-feature-list">
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Zero possibility of phone-forwarding proxy</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Mutual cross-check with instructor's beacon</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Passive student operation without battery drain</li>
+              </ul>
+            </div>
+
+            <div class="usp-card">
+              <span class="usp-badge">USP 02 // DWELL MONITORING</span>
+              <h3>Continuous Lecture Tracking</h3>
+              <div class="usp-quote">
+                "Presence is monitored throughout the lecture instead of only at entry roll call."
+              </div>
+              <p>
+                Autonomous 3-to-5 minute background sweeps monitor student continuity. If a student slips out 20 minutes into class, the system records partial dwell time and marks the session accordingly.
+              </p>
+              <ul class="usp-feature-list">
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Detects midway departures instantly</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> 75% minimum dwell threshold policy</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Anomaly flags for suspicious RSSI fluctuations</li>
+              </ul>
+            </div>
+
+            <div class="usp-card">
+              <span class="usp-badge">USP 03 // OFFLINE MESH</span>
+              <h3>Mesh Connectivity</h3>
+              <div class="usp-quote">
+                "Classroom data reaches the system even when internet conditions are completely unavailable."
+              </div>
+              <p>
+                Individual classroom ESP32 nodes link into a Bluetooth Mesh network, hopping packets across corridors to a single campus gateway without needing Wi-Fi or cellular routers in each room.
+              </p>
+              <ul class="usp-feature-list">
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Requires zero internet inside classrooms</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Up to 30 days of offline local flash queue</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> One internet uplink covers entire academic block</li>
+              </ul>
+            </div>
+
+          </div>
+
+          <!-- Supporting Pillars from PPT -->
+          <div class="solution-pillars-grid">
+            
+            <div class="pillar-item">
+              <div class="pillar-icon">📱</div>
+              <div>
+                <h4 style="color: var(--navy); margin-bottom: 0.25rem;">Teacher Phone as Classroom Hub</h4>
+                <p style="font-size: 0.85rem; margin: 0;">Teacher's smartphone initiates cryptographic classroom session beacon without dedicated master server.</p>
+              </div>
+            </div>
+
+            <div class="pillar-item">
+              <div class="pillar-icon">🛡️</div>
+              <div>
+                <h4 style="color: var(--navy); margin-bottom: 0.25rem;">Teacher Presence Verification</h4>
+                <p style="font-size: 0.85rem; margin: 0;">Monitors instructor arrival and duration to prevent unscheduled cancellations and proxy teacher substitutions.</p>
+              </div>
+            </div>
+
+            <div class="pillar-item">
+              <div class="pillar-icon">🏫</div>
+              <div>
+                <h4 style="color: var(--navy); margin-bottom: 0.25rem;">Handles College Changes</h4>
+                <p style="font-size: 0.85rem; margin: 0;">Dynamic timetable resolver adjusts effortlessly when lectures migrate to alternative lecture halls or labs.</p>
+              </div>
+            </div>
+
+            <div class="pillar-item">
+              <div class="pillar-icon">📴</div>
+              <div>
+                <h4 style="color: var(--navy); margin-bottom: 0.25rem;">No Full-Time Internet Needed</h4>
+                <p style="font-size: 0.85rem; margin: 0;">Gateway caches records on encrypted local SPIFFS flash and synchronizes when network connectivity returns.</p>
+              </div>
+            </div>
+
+            <div class="pillar-item">
+              <div class="pillar-icon">💳</div>
+              <div>
+                <h4 style="color: var(--navy); margin-bottom: 0.25rem;">Reaches Everyone, No App Needed</h4>
+                <p style="font-size: 0.85rem; margin: 0;">Students without smartphones carry a ₹50 passive BLE beacon card, ensuring 100% equitable institutional coverage.</p>
+              </div>
+            </div>
+
+            <div class="pillar-item">
+              <div class="pillar-icon">📊</div>
+              <div>
+                <h4 style="color: var(--navy); margin-bottom: 0.25rem;">Centralized District Dashboards</h4>
+                <p style="font-size: 0.85rem; margin: 0;">Single portal offers tailored perspectives for college administrators, district inspectors, and parents via SMS.</p>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 5. HOW IT WORKS (12-STEP INTERACTIVE PIPELINE) -->
+      <section class="doc-section dark-section" id="how-it-works">
+        <div class="container">
+          <div class="section-header">
+            <span class="mono-label cyan">AUTONOMOUS DETECTION PIPELINE</span>
+            <h2 class="section-title">How MeshAttend Works</h2>
+            <p class="section-subtitle">
+              Follow the end-to-end signal lifecycle from the moment an instructor enters the classroom to final parent SMS notifications. Click any phase to inspect protocol mechanics.
+            </p>
+          </div>
+
+          <div class="pipeline-container">
+            <!-- Scrollable Step Chips -->
+            <div class="pipeline-steps-bar" id="pipelineStepsBar" role="tablist">
+              <!-- Dynamically generated via app.js -->
+            </div>
+
+            <!-- Dynamic Active Step Viewer -->
+            <div class="step-detail-card" id="stepDetailView">
+              <!-- Populated via app.js -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. INTERACTIVE SYSTEM ARCHITECTURE -->
+      <section class="doc-section" id="architecture">
+        <div class="container">
+          <div class="section-header">
+            <span class="mono-label">END-TO-END DATAFLOW TOPOLOGY</span>
+            <h2 class="section-title">System Architecture</h2>
+            <p class="section-subtitle">
+              Explore the multi-layer hardware, radio-frequency, and cloud stack. Click on any block to review inputs, outputs, underlying silicon, and fault-recovery scenarios.
+            </p>
+          </div>
+
+          <div class="arch-container">
+            <div class="arch-canvas-wrap">
+              <div class="arch-flow-diagram">
+                
+                <div class="arch-node selected" data-node-id="student-device">
+                  <div class="arch-node-icon">📱</div>
+                  <div class="arch-node-title">STUDENT BEACON</div>
+                  <div class="arch-node-tech">BLE Peripheral</div>
+                </div>
+
+                <div class="arch-connector"></div>
+
+                <div class="arch-node" data-node-id="ble-signal">
+                  <div class="arch-node-icon">📶</div>
+                  <div class="arch-node-title">BLE 2.4GHz RF</div>
+                  <div class="arch-node-tech">Adv Channels 37-39</div>
+                </div>
+
+                <div class="arch-connector"></div>
+
+                <div class="arch-node" data-node-id="esp32-node">
+                  <div class="arch-node-icon">📟</div>
+                  <div class="arch-node-title">ESP32 NODE</div>
+                  <div class="arch-node-tech">Room Scanner (₹350)</div>
+                </div>
+
+                <div class="arch-connector"></div>
+
+                <div class="arch-node" data-node-id="mesh-network">
+                  <div class="arch-node-icon">🕸️</div>
+                  <div class="arch-node-title">BLE MESH</div>
+                  <div class="arch-node-tech">Flooding Relay</div>
+                </div>
+
+                <div class="arch-connector"></div>
+
+                <div class="arch-node" data-node-id="gateway">
+                  <div class="arch-node-icon">🛡️</div>
+                  <div class="arch-node-title">GATEWAY HUB</div>
+                  <div class="arch-node-tech">Edge Buffer</div>
+                </div>
+
+                <div class="arch-connector"></div>
+
+                <div class="arch-node" data-node-id="attendance-engine">
+                  <div class="arch-node-icon">⚙️</div>
+                  <div class="arch-node-title">ENGINE</div>
+                  <div class="arch-node-tech">Kalman / Dwell Rule</div>
+                </div>
+
+                <div class="arch-connector"></div>
+
+                <div class="arch-node" data-node-id="database">
+                  <div class="arch-node-icon">🗄️</div>
+                  <div class="arch-node-title">DATABASE</div>
+                  <div class="arch-node-tech">Audit Ledger</div>
+                </div>
+
+                <div class="arch-connector"></div>
+
+                <div class="arch-node" data-node-id="notifications">
+                  <div class="arch-node-icon">📲</div>
+                  <div class="arch-node-title">SMS & DASH</div>
+                  <div class="arch-node-tech">Parent & Admin</div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Dynamic Subsystem Inspector Drawer -->
+            <div class="arch-inspector" id="archInspectorDetails">
+              <!-- Rendered via app.js -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. TECHNICAL DEEP DIVE -->
+      <section class="doc-section alt-bg" id="technology">
+        <div class="container">
+          <div class="section-header">
+            <span class="mono-label">HARDWARE & PROTOCOLS</span>
+            <h2 class="section-title">Technology Stack</h2>
+            <p class="section-subtitle">
+              Engineered with proven, low-cost commodity components that operate dependably under harsh RF interference and physical classroom obstructions.
+            </p>
+          </div>
+
+          <div class="tech-stack-grid">
+            
+            <div class="tech-card">
+              <div class="tech-card-header">
+                <div class="tech-icon">📟</div>
+                <div>
+                  <h3>Hardware Layer</h3>
+                  <span class="mono-label" style="font-size: 0.65rem;">Commodity Microcontrollers</span>
+                </div>
+              </div>
+              <p>
+                Powered by dual-core ESP32 microcontrollers running FreeRTOS with hardware cryptographic accelerators, integrated 2.4 GHz antennas, and micro-USB power supplies.
+              </p>
+              <div class="tech-tags">
+                <span class="tech-tag">ESP-WROOM-32</span>
+                <span class="tech-tag">BLE 4.2 / 5.0</span>
+                <span class="tech-tag">SPIFFS Flash</span>
+                <span class="tech-tag">₹350 / Unit</span>
+              </div>
+            </div>
+
+            <div class="tech-card">
+              <div class="tech-card-header">
+                <div class="tech-icon">🕸️</div>
+                <div>
+                  <h3>Mesh Networking</h3>
+                  <span class="mono-label" style="font-size: 0.65rem;">Bluetooth SIG Mesh 1.0</span>
+                </div>
+              </div>
+              <p>
+                Utilizes managed flooding and relay bearer topologies. Each classroom node acts as an RF repeater, extending coverage across multistory college buildings without cabling.
+              </p>
+              <div class="tech-tags">
+                <span class="tech-tag">Managed Flooding</span>
+                <span class="tech-tag">Relay Bearer</span>
+                <span class="tech-tag">TTL Hops: 4-6</span>
+                <span class="tech-tag">Zero Ethernet</span>
+              </div>
+            </div>
+
+            <div class="tech-card">
+              <div class="tech-card-header">
+                <div class="tech-icon">📐</div>
+                <div>
+                  <h3>Signal Processing</h3>
+                  <span class="mono-label" style="font-size: 0.65rem;">Kalman Filter & RSSI</span>
+                </div>
+              </div>
+              <p>
+                Compensates for human body RF absorption and wall reflections. Applies 1D recursive Kalman estimation to smooth noisy RSSI values into reliable proximity probabilities.
+              </p>
+              <div class="tech-tags">
+                <span class="tech-tag">Log-Distance Model</span>
+                <span class="tech-tag">Kalman Filter</span>
+                <span class="tech-tag">Median Filtering</span>
+                <span class="tech-tag">Proximity Index</span>
+              </div>
+            </div>
+
+            <div class="tech-card">
+              <div class="tech-card-header">
+                <div class="tech-icon">⚙️</div>
+                <div>
+                  <h3>Edge & Cloud Engine</h3>
+                  <span class="mono-label" style="font-size: 0.65rem;">Autonomous State Machine</span>
+                </div>
+              </div>
+              <p>
+                Calculates rolling dwell windows, resolves room timetable reassignments, and manages offline transaction sync buffers for zero data loss during power cuts.
+              </p>
+              <div class="tech-tags">
+                <span class="tech-tag">SQLite Local Buffer</span>
+                <span class="tech-tag">PostgreSQL Cloud</span>
+                <span class="tech-tag">Dwell Engine</span>
+                <span class="tech-tag">SMS Gateway API</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Conceptual Deep Dive on RSSI & Multipath -->
+          <div class="rssi-deep-dive">
+            <span class="mono-label cyan">MATHEMATICAL SIGNAL INTEGRITY</span>
+            <h3 style="margin-top: 0.5rem;">Understanding RSSI Proximity & Physical Limitations</h3>
+            <p>
+              Received Signal Strength Indicator (RSSI) measures received RF signal power in decibels relative to one milliwatt (dBm). While proportional to distance via the Log-Distance Path Loss model, raw RSSI is notoriously noisy due to multipath reflection from chalkboards, metal benches, and moving bodies.
+            </p>
+            <div class="rssi-formula-box">
+              RSSI(d) = RSSI(d₀) - 10 · n · log₁₀(d / d₀) + X_σ
+            </div>
+            <p style="font-size: 0.88rem; color: #CBD5E1; margin: 0;">
+              <strong>Key Architectural Decision:</strong> MeshAttend does not claim unrealistic centimeter-grade indoor positioning. Instead, it applies a recursive 1D Kalman filter coupled with temporal time-windowing to classify whether a device is reliably <em>within the classroom perimeter</em> (&gt; -75 dBm smoothed) versus out in the hallway (&lt; -85 dBm), preventing false-positive proxy logs.
+            </p>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 8. CONTINUOUS ATTENDANCE VISUALIZATION -->
+      <section class="doc-section" id="continuous">
+        <div class="container">
+          <div class="section-header">
+            <span class="mono-label cyan">REAL-TIME DWELL SCRUBBER</span>
+            <h2 class="section-title">Attendance Is More Than a Check-In</h2>
+            <p class="section-subtitle">
+              Traditional systems register a single check-in moment and go blind. MeshAttend tracks continuous classroom presence throughout the entire 60-minute duration. Drag the timeline scrubber below to observe dynamic dwell evaluation.
+            </p>
+          </div>
+
+          <div class="timeline-viz-card">
+            <div class="timeline-controls-bar">
+              <div>
+                <strong style="color: var(--navy); font-size: 1.1rem; display: block;">Lecture Timeline Scrubber</strong>
+                <span style="font-size: 0.85rem; color: var(--muted);">Class CS302: Data Structures & Algorithms (09:00 AM - 10:00 AM)</span>
+              </div>
+
+              <div class="scrubber-group">
+                <span class="mono-label" id="scrubberTimeDisplay" style="font-size: 0.82rem; min-width: 170px;">
+                  09:28 AM (28m / 60m)
+                </span>
+                <input type="range" id="timeScrubber" min="0" max="60" value="28" aria-label="Timeline Minute Scrubber">
+              </div>
+            </div>
+
+            <!-- Student Timelines -->
+            <div class="student-timeline-row">
+              <div class="student-meta">
+                <div class="student-avatar" style="background: rgba(16, 185, 129, 0.15); color: var(--green);">AK</div>
+                <div>
+                  <div class="student-name">Arjun Kumar</div>
+                  <div class="student-roll">ROLL: 21CS01</div>
+                </div>
+              </div>
+              <div class="timeline-track-container">
+                <div class="timeline-segment present" style="width: 100%;" title="Present throughout"></div>
+                <div class="timeline-indicator-pin" style="left: 46%;"></div>
+              </div>
+              <div class="timeline-status-badge" id="status-badge-arjun" style="color: var(--green);">
+                PRESENT (98%)
+              </div>
+            </div>
+
+            <div class="student-timeline-row">
+              <div class="student-meta">
+                <div class="student-avatar" style="background: rgba(239, 68, 68, 0.15); color: var(--red);">PS</div>
+                <div>
+                  <div class="student-name">Pooja Sharma</div>
+                  <div class="student-roll">ROLL: 21CS04</div>
+                </div>
+              </div>
+              <div class="timeline-track-container">
+                <div class="timeline-segment present" style="width: 53%;" title="Present until minute 32"></div>
+                <div class="timeline-segment left" style="width: 47%;" title="Departed classroom early"></div>
+                <div class="timeline-indicator-pin" style="left: 46%;"></div>
+              </div>
+              <div class="timeline-status-badge" id="status-badge-pooja" style="color: var(--red);">
+                LEFT AT 32 MIN
+              </div>
+            </div>
+
+            <div class="student-timeline-row">
+              <div class="student-meta">
+                <div class="student-avatar" style="background: rgba(245, 158, 11, 0.15); color: var(--amber);">RM</div>
+                <div>
+                  <div class="student-name">Rahul Mishra</div>
+                  <div class="student-roll">ROLL: 21CS12</div>
+                </div>
+              </div>
+              <div class="timeline-track-container">
+                <div class="timeline-segment present" style="width: 30%;"></div>
+                <div class="timeline-segment uncertain" style="width: 35%;" title="Flickering signal / suspect phone handoff"></div>
+                <div class="timeline-segment present" style="width: 35%;"></div>
+                <div class="timeline-indicator-pin" style="left: 46%;"></div>
+              </div>
+              <div class="timeline-status-badge" id="status-badge-rahul" style="color: var(--amber);">
+                UNCERTAIN (Weak RSSI)
+              </div>
+            </div>
+
+            <div class="student-timeline-row">
+              <div class="student-meta">
+                <div class="student-avatar" style="background: rgba(100, 116, 139, 0.15); color: var(--muted);">SP</div>
+                <div>
+                  <div class="student-name">Sneha Patel</div>
+                  <div class="student-roll">ROLL: 21CS19</div>
+                </div>
+              </div>
+              <div class="timeline-track-container">
+                <div class="timeline-segment absent" style="width: 100%;" title="Zero signal detected"></div>
+                <div class="timeline-indicator-pin" style="left: 46%;"></div>
+              </div>
+              <div class="timeline-status-badge" id="status-badge-sneha" style="color: #94A3B8;">
+                ABSENT (No Signal)
+              </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; padding: 1rem; background: #F8FAFC; border-radius: var(--radius-sm); font-size: 0.85rem; color: var(--text-secondary); display: flex; align-items: center; justify-content: space-between;">
+              <div>
+                <strong>Policy Engine Threshold:</strong> Final attendance credited only if aggregate presence exceeds <strong>75% (45 min)</strong> of scheduled lecture.
+              </div>
+              <div class="mono-label status-online">RULE ACTIVE</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. TEACHER PRESENCE VERIFICATION -->
+      <section class="doc-section alt-bg" id="teacher-presence">
+        <div class="container">
+          <div class="section-header">
+            <span class="mono-label">FACULTY OVERSIGHT & INTEGRITY</span>
+            <h2 class="section-title">Teacher Presence Verification</h2>
+            <p class="section-subtitle">
+              A comprehensive system must protect students and administrators by confirming that classes are actually conducted by authorized faculty.
+            </p>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: center;">
+            <div>
+              <p style="font-size: 1.05rem; line-height: 1.7;">
+                The classroom hub doesn't just listen to students; it performs mutual cryptographic beacon verification with the professor's authenticated mobile device. If an instructor is absent or departs prematurely, the session is flagged automatically.
+              </p>
+
+              <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+                <div class="pillar-item">
+                  <div class="pillar-icon" style="color: var(--amber); background: rgba(245, 158, 11, 0.1);">⏱️</div>
+                  <div>
+                    <h4 style="color: var(--navy); margin-bottom: 0.2rem;">Identifies Early Class Exits</h4>
+                    <p style="font-size: 0.84rem; margin: 0;">Logs if a lecture was cut short by more than 15 minutes before the scheduled timetable slot.</p>
+                  </div>
+                </div>
+
+                <div class="pillar-item">
+                  <div class="pillar-icon" style="color: var(--blue); background: rgba(23, 105, 224, 0.1);">🔄</div>
+                  <div>
+                    <h4 style="color: var(--navy); margin-bottom: 0.2rem;">Tracks Lecture Interruptions</h4>
+                    <p style="font-size: 0.84rem; margin: 0;">Monitors prolonged faculty absences during practical laboratory sessions or workshops.</p>
+                  </div>
+                </div>
+
+                <div class="pillar-item">
+                  <div class="pillar-icon" style="color: var(--cyan); background: rgba(34, 211, 238, 0.1);">📍</div>
+                  <div>
+                    <h4 style="color: var(--navy); margin-bottom: 0.2rem;">Handles Unannounced Room Changes</h4>
+                    <p style="font-size: 0.84rem; margin: 0;">If a teacher migrates the batch to an adjoining seminar room, mesh nodes update the room mapping automatically.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="background: var(--navy); border-radius: var(--radius-xl); padding: 2.5rem; color: #fff; border: 1px solid rgba(59, 130, 246, 0.3); text-align: center;">
+              <div style="width: 70px; height: 70px; border-radius: 50%; background: rgba(34, 211, 238, 0.15); display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1.25rem auto; border: 2px solid var(--cyan);">
+                👨‍🏫
+              </div>
+              <h3 style="color: #fff; margin-bottom: 0.5rem;">Mutual Beacon Handshake</h3>
+              <p style="font-size: 0.88rem; color: #94A3B8; margin-bottom: 1.5rem;">
+                Master session packets broadcasted from the instructor's device validate the temporal cryptographic window for all students in Room #302.
+              </p>
+              
+              <div style="background: rgba(4, 14, 27, 0.7); padding: 1rem; border-radius: var(--radius-md); font-family: var(--font-mono); font-size: 0.78rem; text-align: left; color: var(--cyan); line-height: 1.6;">
+                &gt; TEACHER_UUID: 550e8400-e29b-41d4-a716<br>
+                &gt; SESSION_EPOCH: 20261008-0900-CS302<br>
+                &gt; STATUS: AUDITED_PRESENT [RSSI -54 dBm]<br>
+                &gt; INTEGRITY_CONFIRMATION: 100% VALIDATED
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10. OFFLINE / LOW CONNECTIVITY OPERATION -->
+      <section class="doc-section dark-section" id="offline">
+        <div class="container">
+          <div class="section-header">
+            <span class="mono-label cyan">RESILIENT INFRASTRUCTURE</span>
+            <h2 class="section-title">Built for Real-World Connectivity</h2>
+            <p class="section-subtitle">
+              Public educational institutions cannot rely on uninterrupted high-speed fiber broadband. MeshAttend functions completely offline inside classrooms and synchronizes gracefully whenever an uplink becomes available.
+            </p>
+          </div>
+
+          <div class="offline-card">
+            
+            <!-- Interactive No Internet Toggle Banner -->
+            <div class="offline-toggle-banner">
+              <div id="offlineStateBanner" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <span class="pulse-dot" style="color: #10B981;"></span>
+                  <div>
+                    <strong style="color: #10B981; font-size: 1rem;">STATUS: CAMPUS INTERNET ONLINE</strong>
+                    <div style="font-size: 0.8rem; color: #94A3B8;">Real-time WebSocket connection streaming to State Central Database</div>
+                  </div>
+                </div>
+                <span class="mono-label status-online">CLOUD SYNC ACTIVE</span>
+              </div>
+
+              <div class="toggle-switch-wrap" style="margin-left: 1.5rem;">
+                <span class="mono-label" style="font-size: 0.75rem;">SIMULATE INTERNET</span>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="offlineSimToggle" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Architectural Comparison -->
+            <div class="connectivity-comparison-grid">
+              
+              <div class="conn-box">
+                <span class="mono-label status-danger" style="margin-bottom: 0.75rem;">CONVENTIONAL SYSTEM</span>
+                <h3 style="color: #fff; margin-bottom: 0.75rem;">Fragile Point-to-Point Uplink</h3>
+                <p style="font-size: 0.88rem; color: #94A3B8; margin-bottom: 1.5rem;">
+                  Every single classroom requires an individual Wi-Fi router or 4G SIM terminal. If an uplink fails, attendance operations freeze completely.
+                </p>
+                <div style="font-family: var(--font-mono); font-size: 0.8rem; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: var(--radius-sm); color: #EF4444;">
+                  Every Classroom &rarr; Internet Fails &rarr; ❌ Data Lost
+                </div>
+              </div>
+
+              <div class="conn-box meshattend-box">
+                <span class="mono-label status-online" style="margin-bottom: 0.75rem;">MESHATTEND ARCHITECTURE</span>
+                <h3 style="color: var(--cyan); margin-bottom: 0.75rem;">Peer-to-Peer Mesh + Local Flash Queue</h3>
+                <p style="font-size: 0.88rem; color: #CBD5E1; margin-bottom: 1.5rem;">
+                  Classroom nodes relay packets over Bluetooth Mesh to the wing gateway. The gateway queues data on internal flash memory until connectivity returns.
+                </p>
+                <div style="font-family: var(--font-mono); font-size: 0.8rem; background: rgba(0,0,0,0.4); padding: 1rem; border-radius: var(--radius-sm); color: var(--cyan);">
+                  Classroom Nodes &rarr; BLE Mesh &rarr; Gateway &rarr; ✅ Buffer Queue
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Queue Counter & Manual Sync Trigger -->
+            <div style="margin-top: 2rem; padding: 1.25rem; background: rgba(4, 14, 27, 0.7); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); text-transform: uppercase;">LOCAL GATEWAY FLASH MEMORY BUFFER</span>
+                <div id="offlineBufferCount" style="font-size: 1.1rem; font-weight: 700; color: #fff;">0 Packets (Fully Synced)</div>
+              </div>
+
+              <button class="btn-primary" id="triggerManualSyncBtn" style="font-size: 0.82rem;">
+                Push Manual Sync Flush &rarr;
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- 11. END-TO-END WORKFLOW -->
+      <section class="doc-section" id="workflow">
+        <div class="container">
+          <div class="section-header">
+            <span class="mono-label">FULL TRANSACTION FLOW</span>
+            <h2 class="section-title">End-to-End Workflow</h2>
+            <p class="section-subtitle">
+              Visualizing the complete procedural lifecycle implemented in the MeshAttend embedded firmware and cloud coordinator.
+            </p>
+          </div>
+
+          <div style="background: #fff; border: 1px solid var(--light-border); border-radius: var(--radius-xl); padding: 2.5rem; box-shadow: var(--shadow-md);">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem;">
+              
+              <div class="pillar-item">
+                <div class="pillar-icon" style="background: rgba(23, 105, 224, 0.1); color: var(--blue);">1</div>
+                <div>
+                  <h4 style="color: var(--navy); margin-bottom: 0.2rem;">Lecture Opens</h4>
+                  <p style="font-size: 0.82rem; margin: 0;">Timetable triggers session token; teacher's mobile activates BLE peripheral beacon mode.</p>
+                </div>
+              </div>
+
+              <div class="pillar-item">
+                <div class="pillar-icon" style="background: rgba(34, 211, 238, 0.1); color: var(--cyan);">2</div>
+                <div>
+                  <h4 style="color: var(--navy); margin-bottom: 0.2rem;">Students Enter</h4>
+                  <p style="font-size: 0.82rem; margin: 0;">Passive beacon tags and phones broadcast rolling cryptokeys across 2.4 GHz RF channels.</p>
+                </div>
+              </div>
+
+              <div class="pillar-item">
+                <div class="pillar-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--green);">3</div>
+                <div>
+                  <h4 style="color: var(--navy); margin-bottom: 0.2rem;">RSSI Filtering</h4>
+                  <p style="font-size: 0.82rem; margin: 0;">Classroom ESP32 filters multipath noise and checks student proximity relative to instructor.</p>
+                </div>
+              </div>
+
+              <div class="pillar-item">
+                <div class="pillar-icon" style="background: rgba(124, 58, 237, 0.1); color: var(--violet);">4</div>
+                <div>
+                  <h4 style="color: var(--navy); margin-bottom: 0.2rem;">Mesh Hop Relay</h4>
+                  <p style="font-size: 0.82rem; margin: 0;">Verified presence records hop along corridor nodes to centralized floor gateway.</p>
+                </div>
+              </div>
+
+              <div class="pillar-item">
+                <div class="pillar-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--amber);">5</div>
+                <div>
+                  <h4 style="color: var(--navy); margin-bottom: 0.2rem;">Continuous Sweeps</h4>
+                  <p style="font-size: 0.82rem; margin: 0;">Heartbeat sweeps every 3–5 min construct a continuous dwell timeline for the full class period.</p>
+                </div>
+              </div>
+
+              <div class="pillar-item">
+                <div class="pillar-icon" style="background: rgba(239, 68, 68, 0.1); color: var(--red);">6</div>
+                <div>
+                  <h4 style="color: var(--navy); margin-bottom: 0.2rem;">Final Ledger & SMS</h4>
+                  <p style="font-size: 0.82rem; margin: 0;">Ledger computes final status; parent SMS triggered automatically for unexcused absences.</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 12. INTERACTIVE SIMULATOR (HIGH PRIORITY REQUIREMENT) -->
+      <section class="doc-section dark-section" id="simulator">
+        <div class="container">
+          <div class="section-header">
+            <span class="mono-label cyan">HANDS-ON SIMULATION PLAYGROUND</span>
+            <h2 class="section-title">MeshAttend Live Simulator</h2>
+            <p class="section-subtitle">
+              Interact directly with the simulated classroom environment. Toggle student presence, simulate students leaving early, inject signal interference, or drop the teacher's presence to watch the attendance engine respond in real time.
+            </p>
+          </div>
+
+          <div class="simulator-panel">
+            
+            <!-- Telemetry Topbar -->
+            <div class="sim-topbar">
+              <div class="sim-stat-box">
+                <span>PRESENT STUDENTS</span>
+                <strong style="color: var(--green);" id="simCountPresent">3</strong>
+              </div>
+              <div class="sim-stat-box">
+                <span>UNCERTAIN / WEAK RSSI</span>
+                <strong style="color: var(--amber);" id="simCountUncertain">1</strong>
+              </div>
+              <div class="sim-stat-box">
+                <span>LEFT / ABSENT</span>
+                <strong style="color: var(--red);" id="simCountAbsent">2</strong>
+              </div>
+              <div class="sim-stat-box">
+                <span>CLASSROOM ATTENDANCE</span>
+                <strong style="color: var(--cyan);" id="simRate">50%</strong>
+              </div>
+            </div>
+
+            <!-- Simulator Controls & Classroom Roster -->
+            <div class="sim-controls-grid">
+              
+              <!-- Left: Controls Panel -->
+              <div>
+                <div style="background: rgba(4, 14, 27, 0.8); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-lg); padding: 1.5rem;">
+                  <span class="mono-label cyan" style="margin-bottom: 1rem; display: inline-block;">SIMULATOR CONTROLS</span>
+                  
+                  <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div>
+                      <label style="font-size: 0.82rem; color: #94A3B8; display: block; margin-bottom: 0.4rem;">Teacher Status</label>
+                      <button class="btn-outline" id="simToggleTeacher" style="width: 100%; justify-content: center;">
+                        👨‍🏫 Teacher: PRESENT
+                      </button>
+                    </div>
+
+                    <div>
+                      <label style="font-size: 0.82rem; color: #94A3B8; display: block; margin-bottom: 0.4rem;">Add Student to Room</label>
+                      <button class="btn-primary" id="simAddStudentBtn" style="width: 100%; justify-content: center;">
+                        + Enroll New Student
+                      </button>
+                    </div>
+
+                    <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1rem;">
+                      <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); margin-bottom: 0.5rem;">TELEMETRY LOGS</div>
+                      <div style="font-family: var(--font-mono); font-size: 0.75rem; color: #22D3EE; background: #020813; padding: 0.75rem; border-radius: var(--radius-sm); line-height: 1.5;">
+                        • BLE Adv Channels: 37, 38, 39<br>
+                        • Mesh Packets: 184 msg/min<br>
+                        • Avg RSSI: -64.2 dBm<br>
+                        • Latency: 142ms (2 Hops)
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right: Simulated Classroom Student Cards -->
+              <div class="sim-classroom-board">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                  <span class="mono-label" style="font-size: 0.72rem;">ACTIVE CLASSROOM ROSTER // ROOM #302</span>
+                  <span style="font-size: 0.75rem; color: #94A3B8;">Click buttons to toggle individual states</span>
+                </div>
+
+                <div class="sim-student-list" id="simStudentRoster">
+                  <!-- Dynamically rendered via app.js -->
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- 13. ADMIN DASHBOARD PREVIEW -->
+      <section class="doc-section alt-bg" id="dashboard">
+        <div class="container">
+          <div class="section-header">
+            <span class="mono-label">CAMPUS INTELLIGENCE PORTAL</span>
+            <h2 class="section-title">Admin Dashboard Preview</h2>
+            <p class="section-subtitle">
+              Interactive preview of the centralized management console used by college principals, department heads, and administrative staff to inspect live attendance records.
+            </p>
+          </div>
+
+          <div class="dashboard-preview-window">
+            <!-- Window Title Bar -->
+            <div class="dash-window-header">
+              <div class="dash-window-dots">
+                <span class="dash-dot red"></span>
+                <span class="dash-dot yellow"></span>
+                <span class="dash-dot green"></span>
+              </div>
+              <div style="font-family: var(--font-mono); font-size: 0.75rem; color: #94A3B8;">
+                https://portal.meshattend.edu/admin/live-monitor
+              </div>
+              <span class="mono-label status-online" style="font-size: 0.65rem;">CONNECTED</span>
+            </div>
+
+            <div class="dash-body">
+              <!-- Left Sidebar -->
+              <div class="dash-sidebar">
+                <div style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--muted); padding: 0 0.85rem 0.5rem; text-transform: uppercase;">
+                  Management
+                </div>
+                <div class="dash-nav-item active">📊 Live Attendance</div>
+                <div class="dash-nav-item">🏫 Department Roster</div>
+                <div class="dash-nav-item">🕸️ Mesh Node Health</div>
+                <div class="dash-nav-item">📲 Parent SMS Alerts</div>
+                <div class="dash-nav-item">📈 Retention Analytics</div>
+                <div class="dash-nav-item">⚙️ Hardware Settings</div>
+              </div>
+
+              <!-- Main Dashboard Area -->
+              <div class="dash-main-area">
+                
+                <!-- Filter Bar -->
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+                  <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <select id="dashClassFilter" style="background: #081628; border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 0.45rem 0.75rem; border-radius: 4px; font-size: 0.82rem;">
+                      <option value="CS-3A">CS-3A (Room #302) • Prof. Sharma</option>
+                      <option value="EE-2B">EE-2B (Room #204) • Dr. Verma</option>
+                      <option value="ME-4A">ME-4A (Room #108) • Prof. Kulkarni</option>
+                    </select>
+
+                    <input type="text" id="dashSearchInput" placeholder="Filter student or roll..." style="background: #081628; border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 0.45rem 0.75rem; border-radius: 4px; font-size: 0.82rem; width: 180px;">
+                  </div>
+
+                  <div style="font-size: 0.8rem; color: #94A3B8;">
+                    Lecture Duration: <strong style="color: #fff;">09:00 - 10:00 AM</strong>
+                  </div>
+                </div>
+
+                <!-- Metrics Row -->
+                <div class="dash-metrics-row">
+                  <div class="dash-card">
+                    <span>TOTAL ENROLLED</span>
+                    <strong>64</strong>
+                  </div>
+                  <div class="dash-card">
+                    <span>PRESENT (DWELL &gt; 75%)</span>
+                    <strong style="color: var(--green);">54</strong>
+                  </div>
+                  <div class="dash-card">
+                    <span>LEFT EARLY / SUSPECT</span>
+                    <strong style="color: var(--amber);">4</strong>
+                  </div>
+                  <div class="dash-card">
+                    <span>UNEXCUSED ABSENT</span>
+                    <strong style="color: var(--red);">6</strong>
+                  </div>
+                </div>
+
+                <!-- Table Container -->
+                <div class="dash-table-wrap">
+                  <table class="dash-table">
+                    <thead>
+                      <tr>
+                        <th>Student Name</th>
+                        <th>Roll Number</th>
+                        <th>Entry Time</th>
+                        <th>Signal RSSI</th>
+                        <th>Dwell %</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dashStudentTableBody">
+                      <!-- Rendered dynamically via app.js -->
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 14. RESEARCH & REFERENCES -->
+      <section class="doc-section" id="research">
+        <div class="container">
+          <div class="section-header">
+            <span class="mono-label">EMPIRICAL FOUNDATIONS</span>
+            <h2 class="section-title">Research & References</h2>
+            <p class="section-subtitle">
+              The MeshAttend architecture is synthesized from published peer-reviewed investigations into Bluetooth Low Energy, RSSI Kalman noise filtering, mesh routing topologies, and national college retention statistics.
+            </p>
+          </div>
+
+          <!-- Research Tabs -->
+          <div class="research-tabs">
+            <button class="tab-btn active" data-cat="all">All References (6)</button>
+            <button class="tab-btn" data-cat="applied">Field & Applied BLE (2)</button>
+            <button class="tab-btn" data-cat="signal">RSSI & Signal Processing (2)</button>
+            <button class="tab-btn" data-cat="retention">Government Data & Retention (2)</button>
+          </div>
+
+          <!-- Research Cards Grid -->
+          <div class="research-cards-grid" id="researchCardsGrid">
+            <!-- Dynamically populated via app.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- 15. COMPARISON WITH EXISTING SYSTEMS -->
+      <section class="doc-section alt-bg" id="comparison">
+        <div class="container">
+          <div class="section-header">
+            <span class="mono-label">BENCHMARKING & TRADE-OFFS</span>
+            <h2 class="section-title">MeshAttend vs Existing Solutions</h2>
+            <p class="section-subtitle">
+              Comprehensive evaluation against standard institutional attendance mechanisms across identity verification, continuity, infrastructure costs, and connectivity dependencies.
+            </p>
+          </div>
+
+          <div class="table-responsive">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Parameters</th>
+                  <th>Manual Attendance</th>
+                  <th>Mobile App (GPS/QR)</th>
+                  <th>RFID Cards</th>
+                  <th>Biometric Terminals</th>
+                  <th>Wi-Fi Proximity</th>
+                  <th class="col-meshattend">MeshAttend (BLE Mesh)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Identity Verification</td>
+                  <td class="val-mod">◐ Moderate (Visual)</td>
+                  <td class="val-weak">✕ Weak (Proxy phone)</td>
+                  <td class="val-weak">✕ Weak (Card passing)</td>
+                  <td class="val-strong">✓ Strong (Finger/Face)</td>
+                  <td class="val-weak">✕ Weak (MAC spoofing)</td>
+                  <td class="col-meshattend val-strong">✓ Strong (Crypto BLE)</td>
+                </tr>
+                <tr>
+                  <td>Continuous Presence Tracking</td>
+                  <td class="val-weak">✕ None (One-time)</td>
+                  <td class="val-weak">✕ None (One-time QR)</td>
+                  <td class="val-weak">✕ None (Tap entry)</td>
+                  <td class="val-weak">✕ None (Queue bottleneck)</td>
+                  <td class="val-mod">◐ Moderate</td>
+                  <td class="col-meshattend val-strong">✓ Strong (Rolling Dwell)</td>
+                </tr>
+                <tr>
+                  <td>Low/No Internet Requirement</td>
+                  <td class="val-strong">✓ Strong (Paper)</td>
+                  <td class="val-weak">✕ Weak (Mandatory 4G)</td>
+                  <td class="val-mod">◐ Moderate</td>
+                  <td class="val-weak">✕ Weak (Server link)</td>
+                  <td class="val-weak">✕ Weak (Campus LAN)</td>
+                  <td class="col-meshattend val-strong">✓ Strong (Offline Mesh)</td>
+                </tr>
+                <tr>
+                  <td>Interference & Multipath Tolerance</td>
+                  <td class="val-strong">✓ Strong</td>
+                  <td class="val-mod">◐ Moderate</td>
+                  <td class="val-strong">✓ Strong</td>
+                  <td class="val-strong">✓ Strong</td>
+                  <td class="val-weak">✕ Weak (Thick walls)</td>
+                  <td class="col-meshattend val-strong">✓ Strong (Kalman Filtered)</td>
+                </tr>
+                <tr>
+                  <td>Hardware Deployment Cost</td>
+                  <td class="val-strong">✓ Free (Paper registers)</td>
+                  <td class="val-mod">◐ Moderate (Server)</td>
+                  <td class="val-mod">◐ High (Card readers)</td>
+                  <td class="val-weak">✕ High (₹4,500/room)</td>
+                  <td class="val-weak">✕ Very High (Cisco APs)</td>
+                  <td class="col-meshattend val-strong">✓ Ultra-Low (₹350/node)</td>
+                </tr>
+                <tr>
+                  <td>Classroom Queue Bottleneck</td>
+                  <td class="val-weak">✕ Severe (15m lost)</td>
+                  <td class="val-mod">◐ Moderate (QR screen)</td>
+                  <td class="val-mod">◐ Moderate (Tap queue)</td>
+                  <td class="val-weak">✕ Severe (Door queue)</td>
+                  <td class="val-strong">✓ None</td>
+                  <td class="col-meshattend val-strong">✓ Zero (Walk-in Scan)</td>
+                </tr>
+                <tr>
+                  <td>Teacher Presence Auditing</td>
+                  <td class="val-weak">✕ None</td>
+                  <td class="val-weak">✕ None</td>
+                  <td class="val-weak">✕ None</td>
+                  <td class="val-mod">◐ Partial</td>
+                  <td class="val-weak">✕ None</td>
+                  <td class="col-meshattend val-strong">✓ Mutual Verification</td>
+                </tr>
+                <tr>
+                  <td>Battery & Power Drain</td>
+                  <td class="val-strong">✓ Zero</td>
+                  <td class="val-weak">✕ High (GPS wake lock)</td>
+                  <td class="val-strong">✓ Zero (Passive)</td>
+                  <td class="val-strong">✓ Mains wall socket</td>
+                  <td class="val-mod">◐ Moderate Wi-Fi</td>
+                  <td class="col-meshattend val-strong">✓ Ultra-Low (BLE adv)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 16. FEASIBILITY & VIABILITY -->
+      <section class="doc-section" id="feasibility">
+        <div class="container">
+          <div class="section-header">
+            <span class="mono-label">INSTITUTIONAL ROLLOUT</span>
+            <h2 class="section-title">Feasibility & Stakeholder Viability</h2>
+            <p class="section-subtitle">
+              Why MeshAttend is uniquely practical for government colleges operating within strict capital expenditure boundaries and rural constraints.
+            </p>
+          </div>
+
+          <div class="feasibility-grid">
+            
+            <!-- Feasibility Panel -->
+            <div class="feas-panel">
+              <span class="mono-label cyan">ENGINEERING FEASIBILITY</span>
+              <h3 style="margin-top: 0.5rem; margin-bottom: 1rem;">Low Infrastructure Burden</h3>
+              
+              <div class="feas-item">
+                <div class="feas-icon">⚡</div>
+                <div>
+                  <h4 style="color: var(--navy); margin-bottom: 0.2rem;">Readily Available Hardware</h4>
+                  <p style="font-size: 0.85rem; margin: 0;">ESP32 microcontrollers are mass-produced commodity chips costing ₹300–400 across Indian electronics distributors.</p>
+                </div>
+              </div>
+
+              <div class="feas-item">
+                <div class="feas-icon">🕸️</div>
+                <div>
+                  <h4 style="color: var(--navy); margin-bottom: 0.2rem;">Established Mesh Protocols</h4>
+                  <p style="font-size: 0.85rem; margin: 0;">Built on standardized Bluetooth SIG Mesh 1.0 protocols rather than unproven proprietary RF radio stacks.</p>
+                </div>
+              </div>
+
+              <div class="feas-item">
+                <div class="feas-icon">🔌</div>
+                <div>
+                  <h4 style="color: var(--navy); margin-bottom: 0.2rem;">No Heavy Classroom Wiring</h4>
+                  <p style="font-size: 0.85rem; margin: 0;">Classroom nodes power from existing 5V USB adapters or standard wall sockets; no expensive Ethernet conduit runs.</p>
+                </div>
+              </div>
+
+              <div class="feas-item">
+                <div class="feas-icon">🏢</div>
+                <div>
+                  <h4 style="color: var(--navy); margin-bottom: 0.2rem;">One Gateway Per Block</h4>
+                  <p style="font-size: 0.85rem; margin: 0;">Only 1 central gateway per academic wing requires internet backhaul, reducing SIM and data plan costs by 95%.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Viability Panel: 3 Stakeholders -->
+            <div class="feas-panel">
+              <span class="mono-label cyan">MULTI-STAKEHOLDER VIABILITY</span>
+              <h3 style="margin-top: 0.5rem; margin-bottom: 1rem;">One System, Three Vital Perspectives</h3>
+
+              <div class="stakeholder-cards">
+                
+                <div class="stakeholder-card">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.35rem;">
+                    <strong style="color: var(--navy); font-size: 0.95rem;">1. College Principals & HODs</strong>
+                    <span class="mono-label" style="font-size: 0.65rem;">ADMIN PORTAL</span>
+                  </div>
+                  <p style="font-size: 0.82rem; margin: 0;">
+                    Automates daily registers, audits actual lecture commencement, frees 20 minutes per class for teaching, and generates compliance audits.
+                  </p>
+                </div>
+
+                <div class="stakeholder-card">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.35rem;">
+                    <strong style="color: var(--navy); font-size: 0.95rem;">2. District Education Officers</strong>
+                    <span class="mono-label" style="font-size: 0.65rem;">POLICY ANALYTICS</span>
+                  </div>
+                  <p style="font-size: 0.82rem; margin: 0;">
+                    Identifies macro-level attendance deficits, detects colleges suffering from teacher absenteeism, and prevents the 11.5% dropout cascade.
+                  </p>
+                </div>
+
+                <div class="stakeholder-card">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.35rem;">
+                    <strong style="color: var(--navy); font-size: 0.95rem;">3. Parents & Guardians</strong>
+                    <span class="mono-label" style="font-size: 0.65rem;">SMS ALERTS</span>
+                  </div>
+                  <p style="font-size: 0.82rem; margin: 0;">
+                    Receive instant, automated regional language SMS notifications if a student is absent without needing costly smartphone applications.
+                  </p>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Deployment Economics Interactive Calculator -->
+          <div class="calc-box">
+            <div class="calc-grid">
+              <div>
+                <span class="mono-label cyan">DEPLOYMENT ECONOMICS CALCULATOR</span>
+                <h3 style="color: #fff; margin-top: 0.5rem; margin-bottom: 0.75rem;">Scale Across Your Entire Institution</h3>
+                <p style="font-size: 0.88rem; color: #94A3B8; margin-bottom: 1.5rem;">
+                  Adjust the slider to compare total hardware capital expenditure between MeshAttend and conventional biometric fingerprint terminals.
+                </p>
+
+                <div style="margin-bottom: 1rem;">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span style="font-size: 0.85rem; color: #CBD5E1;">Classrooms to Equip:</span>
+                    <strong style="color: var(--cyan); font-family: var(--font-mono);" id="calcRoomsDisplay">20 Classrooms</strong>
+                  </div>
+                  <input type="range" id="calcRoomsSlider" min="5" max="100" step="5" value="20" style="width: 100%; accent-color: var(--cyan); cursor: pointer;" aria-label="Classroom Count Slider">
+                </div>
+              </div>
+
+              <div style="background: rgba(4, 14, 27, 0.7); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: var(--radius-lg); padding: 1.5rem; text-align: center;">
+                <div style="margin-bottom: 1rem;">
+                  <span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); text-transform: uppercase;">MeshAttend Estimated Cost</span>
+                  <div style="font-size: 2rem; font-weight: 800; color: var(--green); font-family: var(--font-heading);" id="calcMeshCostDisplay">
+                    ₹10,000
+                  </div>
+                  <div style="font-size: 0.72rem; color: #94A3B8;">(Nodes + Gateway Hubs)</div>
+                </div>
+
+                <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 0.75rem; margin-bottom: 1rem;">
+                  <span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); text-transform: uppercase;">Biometric / RFID Terminal Setup</span>
+                  <div style="font-size: 1.4rem; font-weight: 700; color: #EF4444; font-family: var(--font-heading);" id="calcTradCostDisplay">
+                    ₹90,000
+                  </div>
+                </div>
+
+                <div class="mono-label status-online" id="calcSavingsDisplay" style="font-size: 0.75rem;">
+                  89% Capital Expenditure Saved
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 17. RISKS & MITIGATION SOLUTIONS -->
+      <section class="doc-section alt-bg" id="risks">
+        <div class="container">
+          <div class="section-header">
+            <span class="mono-label status-warning">PROACTIVE RISK MITIGATION</span>
+            <h2 class="section-title">Risks We Designed For</h2>
+            <p class="section-subtitle">
+              Directly addressing operational, human, and governmental hurdles identified during college field research with concrete architectural countermeasures.
+            </p>
+          </div>
+
+          <div class="risk-solutions-list">
+            
+            <div class="risk-pair-card">
+              <div class="risk-side">
+                <span class="mono-label status-danger" style="margin-bottom: 0.5rem;">RISK 01</span>
+                <h3 style="color: var(--navy); margin-bottom: 0.5rem;">Teacher Resistance</h3>
+                <p style="font-size: 0.88rem; color: var(--text-secondary);">
+                  Faculty may initially perceive classroom presence monitoring as intrusive administrative surveillance or lack of trust in their teaching autonomy.
+                </p>
+              </div>
+              <div class="solution-side">
+                <span class="mono-label status-online" style="margin-bottom: 0.5rem;">MITIGATION STRATEGY</span>
+                <h3 style="color: var(--green); margin-bottom: 0.5rem;">Protection, Not Surveillance</h3>
+                <p style="font-size: 0.88rem; color: var(--text-secondary);">
+                  Position the system as an automated assistant that saves 20 minutes of tedious manual roll calls every lecture and legally defends instructors with proof of conducted classes.
+                </p>
+              </div>
+            </div>
+
+            <div class="risk-pair-card">
+              <div class="risk-side">
+                <span class="mono-label status-danger" style="margin-bottom: 0.5rem;">RISK 02</span>
+                <h3 style="color: var(--navy); margin-bottom: 0.5rem;">Hardware Damage or Theft</h3>
+                <p style="font-size: 0.88rem; color: var(--text-secondary);">
+                  Understaffed or rural college classrooms face risks of exposed nodes being tampered with, accidentally damaged, or stolen from walls.
+                </p>
+              </div>
+              <div class="solution-side">
+                <span class="mono-label status-online" style="margin-bottom: 0.5rem;">MITIGATION STRATEGY</span>
+                <h3 style="color: var(--green); margin-bottom: 0.5rem;">Low-Cost Replaceable Nodes</h3>
+                <p style="font-size: 0.88rem; color: var(--text-secondary);">
+                  ESP32 boards cost only ₹350 and mount inside tamper-resistant junction boxes high on walls. Neighboring mesh nodes send immediate offline alerts if a device stops heartbeating.
+                </p>
+              </div>
+            </div>
+
+            <div class="risk-pair-card">
+              <div class="risk-side">
+                <span class="mono-label status-danger" style="margin-bottom: 0.5rem;">RISK 03</span>
+                <h3 style="color: var(--navy); margin-bottom: 0.5rem;">Budget & Procurement Delays</h3>
+                <p style="font-size: 0.88rem; color: var(--text-secondary);">
+                  State-level public university rollouts often stall for months awaiting formal tenders, financial sanctions, and centralized approvals.
+                </p>
+              </div>
+              <div class="solution-side">
+                <span class="mono-label status-online" style="margin-bottom: 0.5rem;">MITIGATION STRATEGY</span>
+                <h3 style="color: var(--green); margin-bottom: 0.5rem;">Start With Pilot Colleges</h3>
+                <p style="font-size: 0.88rem; color: var(--text-secondary);">
+                  Deploy in 2–3 pilot colleges first using minor departmental contingency funds. Demonstrate demonstrable gains in instructional hours and attendance, unlocking state budget grants.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- 18. PROTOTYPE & LIVE DEMO SHOWCASE -->
+      <section class="doc-section dark-section" id="prototype">
+        <div class="container">
+          <div class="section-header">
+            <span class="mono-label cyan">VALIDATED PROTOTYPE</span>
+            <h2 class="section-title">See MeshAttend in Action</h2>
+            <p class="section-subtitle">
+              Engineered with functional ESP32 hardware nodes communicating over Bluetooth Low Energy mesh topology with live presence telemetry.
+            </p>
+          </div>
+
+          <div class="prototype-showcase-box">
+            <div class="prototype-grid">
+              
+              <div>
+                <span class="mono-label status-online" style="margin-bottom: 1rem;">WORKING DEMONSTRATION</span>
+                <h3 style="font-size: 1.8rem; color: #fff; margin-bottom: 1rem;">ESP32 BLE Mesh Hardware Proof-of-Concept</h3>
+                <p style="color: #CBD5E1; line-height: 1.7; margin-bottom: 1.5rem;">
+                  Our prototype validates mutual beacon scanning between student BLE peripherals, node-to-gateway multihop mesh transport, and real-time dashboard ledger compilation.
+                </p>
+
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem;">
+                  <a href="#simulator" class="btn-primary">
+                    Launch Web Simulator
+                  </a>
+                  <a href="[PROTOTYPE_DEMO_URL]" target="_blank" rel="noopener noreferrer" class="btn-outline">
+                    Watch Video Demo (YouTube)
+                  </a>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 1.5rem; background: rgba(11, 42, 74, 0.4); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid rgba(59, 130, 246, 0.2);">
+                  <div class="qr-code-holder">
+                    <!-- Clean SVG QR Code Representation -->
+                    <svg viewBox="0 0 100 100" width="100%" height="100%">
+                      <rect width="100" height="100" fill="#fff"/>
+                      <!-- Outer markers -->
+                      <rect x="10" y="10" width="30" height="30" fill="#071A2F"/>
+                      <rect x="15" y="15" width="20" height="20" fill="#fff"/>
+                      <rect x="20" y="20" width="10" height="10" fill="#071A2F"/>
+
+                      <rect x="60" y="10" width="30" height="30" fill="#071A2F"/>
+                      <rect x="65" y="15" width="20" height="20" fill="#fff"/>
+                      <rect x="70" y="20" width="10" height="10" fill="#071A2F"/>
+
+                      <rect x="10" y="60" width="30" height="30" fill="#071A2F"/>
+                      <rect x="15" y="65" width="20" height="20" fill="#fff"/>
+                      <rect x="20" y="70" width="10" height="10" fill="#071A2F"/>
+
+                      <!-- Pattern dots -->
+                      <rect x="45" y="15" width="8" height="8" fill="#071A2F"/>
+                      <rect x="45" y="35" width="8" height="8" fill="#071A2F"/>
+                      <rect x="25" y="45" width="8" height="8" fill="#071A2F"/>
+                      <rect x="55" y="45" width="10" height="10" fill="#071A2F"/>
+                      <rect x="70" y="55" width="8" height="8" fill="#071A2F"/>
+                      <rect x="45" y="70" width="8" height="8" fill="#071A2F"/>
+                      <rect x="65" y="75" width="12" height="12" fill="#071A2F"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <strong style="color: #fff; font-size: 0.95rem; display: block; margin-bottom: 0.2rem;">Scan for Mobile Prototype</strong>
+                    <p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 0.5rem;">
+                      Scan the code to test the mobile classroom discovery client.
+                    </p>
+                    <span class="mono-label" style="font-size: 0.65rem;">DEMO ID: MESH-2026-LIVE</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Prototype Hardware Diagram -->
+              <div class="prototype-screen-mock">
+                <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--cyan); margin-bottom: 1rem; display: flex; justify-content: space-between;">
+                  <span>ESP32 PINOUT & RF SCHEMATIC</span>
+                  <span>PCB REV 1.4</span>
+                </div>
+                
+                <div style="background: #071526; padding: 1.5rem; border-radius: var(--radius-md); border: 1px dashed rgba(34, 211, 238, 0.4);">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <div style="font-size: 0.85rem; font-weight: 700; color: #fff;">ESP32 WROOM-32D</div>
+                    <span class="mono-label status-online" style="font-size: 0.65rem;">FIRMWARE ACTIVE</span>
+                  </div>
+
+                  <div style="font-family: var(--font-mono); font-size: 0.75rem; color: #CBD5E1; line-height: 1.8;">
+                    [PIN 5V] &larr; Standard USB-C Power Supply<br>
+                    [PIN GND] &larr; Common Ground<br>
+                    [RADIO] &rarr; 2.4 GHz Onboard PCB Antenna<br>
+                    [SPIFFS] &rarr; 4MB Flash Queue Buffer<br>
+                    [UART0] &rarr; USB Debug Serial @ 115200 Baud<br>
+                    [MESH BEARING] &rarr; Bluetooth SIG Mesh Relay
+                  </div>
+                </div>
+
+                <div style="margin-top: 1rem; font-size: 0.8rem; color: #94A3B8; text-align: center;">
+                  Tested over 40+ concurrent BLE beacon devices with zero packet collision drops.
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 19. FUTURE DIRECTIONS & INNOVATION -->
+      <section class="doc-section" id="future">
+        <div class="container">
+          <div class="section-header">
+            <span class="mono-label">LONG-TERM HORIZON</span>
+            <h2 class="section-title">Where MeshAttend Can Go Next</h2>
+            <p class="section-subtitle">
+              Clear evolutionary roadmap to scale beyond individual campuses into a state-level educational telemetry network.
+            </p>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+            
+            <div class="problem-card">
+              <span class="mono-label" style="margin-bottom: 0.75rem; align-self: flex-start;">ROADMAP 01</span>
+              <h3>Angle of Arrival (AoA) Trilateration</h3>
+              <p style="font-size: 0.88rem;">
+                Incorporating BLE 5.1 Angle-of-Arrival (AoA) antenna arrays to provide exact sub-meter student seat mapping and eliminate adjacent room RF bleeding.
+              </p>
+            </div>
+
+            <div class="problem-card">
+              <span class="mono-label" style="margin-bottom: 0.75rem; align-self: flex-start;">ROADMAP 02</span>
+              <h3>Predictive Dropout Machine Learning</h3>
+              <p style="font-size: 0.88rem;">
+                Training lightweight models on historical presence timelines to detect chronic engagement fatigue weeks before a student officially drops out.
+              </p>
+            </div>
+
+            <div class="problem-card">
+              <span class="mono-label" style="margin-bottom: 0.75rem; align-self: flex-start;">ROADMAP 03</span>
+              <h3>State Higher Education ERP Bridge</h3>
+              <p style="font-size: 0.88rem;">
+                Native API connectors into state university ERPs (Samarth eGov suite, AISHE, National Academic Depository) for automated examination hall tickets.
+              </p>
+            </div>
+
+            <div class="problem-card">
+              <span class="mono-label" style="margin-bottom: 0.75rem; align-self: flex-start;">ROADMAP 04</span>
+              <h3>Solar & Energy Harvesting Nodes</h3>
+              <p style="font-size: 0.88rem;">
+                Ultra-low-power BLE beacons with ambient light solar energy harvesting, delivering indefinite multi-year lifespans with zero battery maintenance.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- 20. FINAL CALL TO ACTION -->
+      <section class="doc-section dark-section" style="text-align: center; padding: 6rem 0;">
+        <div class="container" style="max-width: 800px;">
+          <span class="mono-label cyan" style="margin-bottom: 1rem;">REDEFINING CLASSROOM ATTENDANCE</span>
+          <h2 style="font-size: clamp(2.5rem, 5vw, 3.5rem); color: #fff; margin-bottom: 1.25rem;">
+            Attendance, Reimagined.
+          </h2>
+          <p style="font-size: 1.15rem; color: #CBD5E1; margin-bottom: 2.5rem; line-height: 1.6;">
+            From a time-wasting, easily manipulated paper roll call to autonomous continuous classroom presence powered by low-cost mesh intelligence.
+          </p>
+
+          <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+            <a href="#architecture" class="btn-primary">
+              Explore Architecture
+            </a>
+            <a href="#simulator" class="btn-outline">
+              Try Interactive Simulator
+            </a>
+            <a href="#research" class="btn-judge btn-judge-trigger">
+              Review Research
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="footer">
+        <div class="container">
+          <div class="footer-grid">
+            <div>
+              <div class="brand" style="margin-bottom: 1rem;">
+                <div class="brand-logo">M</div>
+                <div class="brand-title">MeshAttend</div>
+              </div>
+              <p style="font-size: 0.85rem; color: #94A3B8; max-width: 320px;">
+                Real-Time Classroom Attendance and Tracking using Bluetooth Low Energy, mesh networking, continuous presence verification, and low-cost ESP32 hardware.
+              </p>
+              <div style="margin-top: 1rem;">
+                <span class="mono-label status-online" style="font-size: 0.65rem;">
+                  BUILT FOR NATIONAL HACKATHON 2026
+                </span>
+              </div>
+            </div>
+
+            <div>
+              <h4>Architecture</h4>
+              <ul>
+                <li><a href="#how-it-works">12-Step Pipeline</a></li>
+                <li><a href="#architecture">System Topology</a></li>
+                <li><a href="#technology">ESP32 & BLE Stack</a></li>
+                <li><a href="#continuous">Continuous Dwell</a></li>
+                <li><a href="#offline">Offline Mesh Buffer</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4>Evaluation</h4>
+              <ul>
+                <li><a href="#comparison">Solution Benchmark</a></li>
+                <li><a href="#feasibility">Economics & Cost</a></li>
+                <li><a href="#risks">Risk Mitigation</a></li>
+                <li><a href="#research">Academic Literature</a></li>
+                <li><a href="#metrics">National Statistics</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4>Interactive Demos</h4>
+              <ul>
+                <li><a href="#simulator">Live Web Simulator</a></li>
+                <li><a href="#dashboard">Admin Portal Mock</a></li>
+                <li><a href="#continuous">Timeline Scrubber</a></li>
+                <li><a href="#prototype">Hardware Pinout</a></li>
+                <li><a href="[ADD_GITHUB_LINK]" target="_blank">GitHub Repository</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="footer-bottom">
+            <div>
+              &copy; 2026 MeshAttend Project. Open-Source Educational Technology Architecture.
+            </div>
+            <div>
+              Designed with Space Grotesk, Inter, and JetBrains Mono.
+            </div>
+          </div>
+        </div>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- FLOATING QUICK DOCK FOR JUDGES (BOTTOM RIGHT) -->
+  <div class="floating-judge-dock">
+    <button class="btn-judge btn-judge-trigger" style="font-size: 0.78rem;">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+      Judge 60s Brief
+    </button>
+    <a href="#simulator" class="mono-label status-online" style="text-decoration: none; font-size: 0.72rem;">
+      Live Simulator &rarr;
+    </a>
+  </div>
+
+  <!-- SEARCH MODAL (CTRL+K) -->
+  <div class="modal-backdrop" id="searchModalBackdrop" role="dialog" aria-modal="true" aria-label="Search Documentation">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" id="closeSearchModal" aria-label="Close search">&times;</button>
+      
+      <div class="search-input-wrap">
+        <svg class="search-icon-pos" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="docSearchInput" placeholder="Search documentation (e.g. BLE, Mesh, RSSI, ESP32, Kalman, Feasibility, Risks)...">
+      </div>
+
+      <div class="search-results-list" id="searchResultsList">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- JUDGE OVERVIEW ELEVATOR PITCH MODAL -->
+  <div class="modal-backdrop" id="judgeModalBackdrop" role="dialog" aria-modal="true" aria-label="Hackathon Judge Overview">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" id="closeJudgeModal" aria-label="Close modal">&times;</button>
+      
+      <div class="mono-label cyan" style="margin-bottom: 0.5rem;">HACKATHON EVALUATION SUMMARY</div>
+      <h2 style="font-size: 1.8rem; color: #fff; margin-bottom: 1.25rem;">
+        MeshAttend in 60 Seconds
+      </h2>
+
+      <div style="display: flex; flex-direction: column; gap: 1.25rem; font-size: 0.92rem; line-height: 1.6;">
+        <div style="background: rgba(4, 14, 27, 0.6); padding: 1rem; border-radius: var(--radius-sm); border-left: 3px solid var(--electric-blue);">
+          <strong style="color: #fff; display: block; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 0.2rem;">What is MeshAttend?</strong>
+          A continuous classroom presence tracking system pairing Bluetooth Low Energy (BLE) beacon detection with multi-hop mesh networking and low-cost ESP32 microcontrollers.
+        </div>
+
+        <div style="background: rgba(4, 14, 27, 0.6); padding: 1rem; border-radius: var(--radius-sm); border-left: 3px solid #EF4444;">
+          <strong style="color: #fff; display: block; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 0.2rem;">Why It Matters (The Problem)</strong>
+          Higher education in India suffers from an 11.5% dropout rate across 12.16 Cr students. Roll calls waste 20 minutes per lecture, enable buddy proxies, go blind when students leave early, and fail in rural colleges with poor internet.
+        </div>
+
+        <div style="background: rgba(4, 14, 27, 0.6); padding: 1rem; border-radius: var(--radius-sm); border-left: 3px solid var(--green);">
+          <strong style="color: #fff; display: block; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 0.2rem;">Key Innovations</strong>
+          <ul style="padding-left: 1.2rem; margin-top: 0.4rem; color: #CBD5E1;">
+            <li><strong>Continuous Dwell Tracking:</strong> Monitors entire 60 minutes, not just a 1-second check-in.</li>
+            <li><strong>Zero Classroom Internet:</strong> Multi-hop Bluetooth Mesh ferries packets to one gateway per block.</li>
+            <li><strong>Mutual Teacher Verification:</strong> Confirms faculty conducted the class to prevent unauthorized substitutions.</li>
+            <li><strong>Ultra-Low Cost:</strong> ₹350 per classroom node vs ₹4,500+ for traditional biometric terminals.</li>
+          </ul>
+        </div>
+
+        <div style="background: rgba(4, 14, 27, 0.6); padding: 1rem; border-radius: var(--radius-sm); border-left: 3px solid var(--amber);">
+          <strong style="color: #fff; display: block; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 0.2rem;">Impact & Feasibility</strong>
+          Saves 89% in capital infrastructure costs, functions during power/network outages, and empowers college principals, district officers, and parents via automated SMS.
+        </div>
+      </div>
+
+      <div style="margin-top: 1.75rem; display: flex; justify-content: flex-end; gap: 0.75rem;">
+        <a href="#simulator" class="btn-primary" onclick="document.getElementById('judgeModalBackdrop').classList.remove('open')">
+          Launch Live Simulator &rarr;
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
